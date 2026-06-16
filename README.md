@@ -1,112 +1,298 @@
-# Project 2: Deploying Microservices on Amazon EKS
+# AWS EKS Production Microservices Platform
 
-## Overview
-This project demonstrates deploying WordPress 
-as a microservice on Amazon EKS (Elastic 
-Kubernetes Service) using Helm. This simulates 
-a real world enterprise deployment where 
-applications are containerized, orchestrated 
-by Kubernetes, and exposed via AWS Load Balancer.
+## Executive Summary
 
-## Architecture
-- Amazon EKS Cluster (Kubernetes 1.34)
-- 2 Worker Nodes (t3.medium) with Auto Scaling
-- WordPress 7.0 deployed via Helm
-- MariaDB database (persistent storage)
-- AWS EBS CSI Driver (gp2 storage class)
-- AWS Application Load Balancer
+This project demonstrates the deployment of a production-style containerized application platform using Amazon Elastic Kubernetes Service (EKS).
 
-## Real World Use Case
-Companies use this setup to:
-- Handle millions of users automatically
-- Scale up during peak traffic
-- Self heal when containers crash
-- Deploy updates with zero downtime
-- Separate concerns with microservices
+The solution uses Kubernetes orchestration, Helm package management, AWS managed Kubernetes services, and persistent cloud storage to deploy a scalable application environment.
 
-## Tools Used
-| Tool | Version | Purpose |
-|------|---------|---------|
-| eksctl | v0.226.0 | Create EKS cluster |
-| kubectl | v1.36.1 | Manage Kubernetes |
-| Helm | v3.21.0 | Deploy applications |
-| AWS EKS | 1.34 | Managed Kubernetes |
-| AWS EBS | gp2 | Persistent storage |
+This project represents a real-world cloud engineering workflow used for running modern applications in production environments.
 
-## Prerequisites
-- AWS CLI configured
-- kubectl installed
-- eksctl installed
-- Helm installed
-- IAM permissions for EKS
+---
 
-## Deployment Steps
+# Project Objectives
 
-### 1. Install Required Tools
-```bash
-# Install eksctl
-curl --silent --location \
-"https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" \
-| tar xz -C /tmp
-sudo mv /tmp/eksctl /usr/local/bin
+This project focuses on:
 
-# Install Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-```
+- Deploying applications using Kubernetes
+- Managing container workloads with Amazon EKS
+- Implementing scalable cloud infrastructure
+- Automating application deployment using Helm
+- Managing persistent storage in Kubernetes
+- Integrating AWS networking and security services
 
-### 2. Create EKS Cluster
-```bash
-eksctl create cluster \
-  --name abdon-eks-cluster \
-  --region us-east-1 \
-  --nodegroup-name abdon-nodes \
-  --node-type t3.medium \
-  --nodes 2 \
-  --nodes-min 1 \
-  --nodes-max 3 \
-  --managed
-```
+---
 
-### 3. Configure EBS Storage
-```bash
-eksctl utils associate-iam-oidc-provider \
-  --region us-east-1 \
-  --cluster abdon-eks-cluster \
-  --approve
+# Architecture Overview
 
-eksctl create addon \
-  --name aws-ebs-csi-driver \
-  --cluster abdon-eks-cluster \
-  --region us-east-1 \
-  --force
-```
+Users
 
-### 4. Deploy WordPress via Helm
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
+↓
 
-helm install my-wordpress bitnami/wordpress \
-  --set wordpressUsername=abdon \
-  --set wordpressBlogName="Abdon's Company Website" \
-  --set global.storageClass=gp2
-```
+AWS Application Load Balancer
 
-### 5. Access WordPress
-```bash
-kubectl get svc my-wordpress
-```
-Open browser and visit the Load Balancer URL!
+↓
 
-## Key Concepts Demonstrated
-- Container orchestration with Kubernetes
-- Helm package management
-- Persistent storage with EBS
-- Load balancing with AWS ELB
-- IAM roles and OIDC integration
-- Auto scaling configuration
+Kubernetes Service
 
-## Author
-**Abdon Njunwa**
-- GitHub: [@ABDON72](https://github.com/ABDON72)
-- Certifications: AWS Solutions Architect | CompTIA A+ | CompTIA Security+
+↓
+
+Amazon EKS Cluster
+
+↓
+
+Kubernetes Pods
+
+↓
+
+WordPress Application + MariaDB Database
+
+↓
+
+Amazon EBS Persistent Storage
+
+
+---
+
+# Technology Stack
+
+## Cloud Platform
+
+- Amazon EKS
+- Amazon EC2 Worker Nodes
+- Application Load Balancer
+- Amazon EBS
+- IAM
+
+
+## Kubernetes
+
+- Kubernetes
+- kubectl
+- Helm
+
+
+## Infrastructure Tools
+
+- eksctl
+- AWS CLI
+
+
+## Application
+
+- WordPress
+- MariaDB
+
+
+---
+
+# Infrastructure Design
+
+The Kubernetes environment includes:
+
+- Amazon EKS control plane
+- Managed node group
+- EC2 worker nodes
+- Kubernetes networking
+- Application Load Balancer
+- Persistent storage
+
+
+Cluster configuration:
+
+- Node type: t3.medium
+- Worker nodes: 2
+- Auto scaling enabled
+- Region: us-east-1
+
+
+---
+
+# Deployment Workflow
+
+The deployment process:
+
+1. Install Kubernetes tools
+
+2. Create Amazon EKS cluster
+
+3. Configure IAM OIDC integration
+
+4. Install AWS EBS CSI driver
+
+5. Deploy application using Helm
+
+6. Expose application through Load Balancer
+
+7. Validate Kubernetes workloads
+
+
+---
+
+# Kubernetes Components
+
+## Pods
+
+Application workloads run inside Kubernetes pods.
+
+## Services
+
+Kubernetes services provide communication and traffic routing.
+
+## Persistent Volumes
+
+Amazon EBS provides persistent storage for stateful applications.
+
+## Helm
+
+Helm manages Kubernetes application deployment and lifecycle.
+
+
+---
+
+# Storage Architecture
+
+This project uses:
+
+Amazon EBS CSI Driver
+
+
+Purpose:
+
+- Dynamic volume provisioning
+- Persistent application storage
+- AWS and Kubernetes storage integration
+
+
+Storage Class:
+
+gp2
+
+
+---
+
+# Scaling and Reliability
+
+Implemented:
+
+- Kubernetes self healing
+- Container restart capability
+- Load balancing
+- Node scaling
+- Persistent storage
+
+
+Benefits:
+
+- High availability
+- Reliability
+- Easier application management
+
+
+---
+
+# Deployment Commands
+
+Create cluster:
+
+eksctl create cluster
+
+
+Verify nodes:
+
+kubectl get nodes
+
+
+Deploy application:
+
+helm install my-wordpress bitnami/wordpress
+
+
+Check pods:
+
+kubectl get pods
+
+
+Check service:
+
+kubectl get svc
+
+
+---
+
+# Security Implementation
+
+Implemented:
+
+- IAM OIDC integration
+- AWS IAM permissions
+- Kubernetes service accounts
+- Secure cloud networking
+- Controlled AWS resource access
+
+
+---
+
+# Engineering Decisions
+
+## Why Amazon EKS?
+
+Amazon EKS provides managed Kubernetes infrastructure while allowing engineers to focus on deploying and operating applications.
+
+## Why Helm?
+
+Helm simplifies Kubernetes application deployment and management.
+
+## Why EBS?
+
+Amazon EBS provides reliable persistent storage for stateful workloads.
+
+
+---
+
+# DevOps Skills Demonstrated
+
+Cloud Engineering:
+
+- Amazon EKS
+- EC2
+- IAM
+- EBS
+- Load Balancing
+
+
+DevOps:
+
+- Kubernetes
+- Helm
+- Container Orchestration
+- Deployment Automation
+
+
+Infrastructure:
+
+- Cloud Architecture
+- Scalability Design
+- Infrastructure Management
+
+
+---
+
+# Future Improvements
+
+- Add Terraform infrastructure provisioning
+- Add Jenkins/GitHub Actions CI/CD pipeline
+- Add Prometheus and Grafana monitoring
+- Add ArgoCD GitOps deployment
+- Add container security scanning
+
+
+---
+
+# Author
+
+Abdon Njunwa
+
+AWS Certified Solutions Architect
+
+Cloud & DevOps Engineer
